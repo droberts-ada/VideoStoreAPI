@@ -6,7 +6,7 @@ class Rental < ApplicationRecord
   validates :due_date, presence: true
   validate :due_date_in_future, on: :create
 
-  after_initialize :set_checkout_date
+  after_initialize :set_defaults
 
   def self.first_outstanding(movie, customer)
     self.where(movie: movie, customer: customer, returned: false).order(:due_date).first
@@ -24,7 +24,8 @@ private
     end
   end
 
-  def set_checkout_date
+  def set_defaults
     self.checkout_date ||= Date.today
+    self.returned ||= false
   end
 end
